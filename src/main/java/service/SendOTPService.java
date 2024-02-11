@@ -4,12 +4,11 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 public class SendOTPService {
 
     public static void sendOTP(String email, String genOTP) {
-
-        String to = email;
 
         String host = "smtp.gmail.com";
 
@@ -21,8 +20,10 @@ public class SendOTPService {
         properties.put("mail.transport.protocol", "smtp");
         properties.put("mail.smtp.starttls.enable", true);
 
-        String from = "gurpartap1258@chitkara.edu.in";
-        String password = "vubz ilbt jwfp aqtt\n";
+        ResourceBundle rb = ResourceBundle.getBundle("config");
+
+        String from = rb.getString("from");
+        String password = rb.getString("password");
 
         Session session = Session.getInstance(properties, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -34,7 +35,7 @@ public class SendOTPService {
         try {
             MimeMessage message = new MimeMessage(session);
 
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 
             message.setSubject("File OTP");
 
