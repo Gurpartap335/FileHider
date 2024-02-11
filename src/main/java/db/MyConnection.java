@@ -3,16 +3,18 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 public class MyConnection {
 
     public static Connection connection;
 
     public static Connection getConnection() {
+
+        ResourceBundle rb = ResourceBundle.getBundle("config");
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/FileHider", "root", "");
-        } catch (ClassNotFoundException | SQLException e) {
+            connection = DriverManager.getConnection(rb.getString("db.url"), rb.getString("db.user"), rb.getString("db.pass"));
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return connection;

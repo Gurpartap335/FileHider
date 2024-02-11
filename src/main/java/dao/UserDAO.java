@@ -3,33 +3,41 @@ package dao;
 import db.MyConnection;
 import model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class UserDAO {
 
-    public static boolean isExists(String email) throws SQLException {
-        Connection connection = MyConnection.getConnection();
+    public static boolean isExists(String email) {
 
-        PreparedStatement ps = connection.prepareStatement("select * from users");
-        ResultSet rs = ps.executeQuery();
+        try (Connection connection = MyConnection.getConnection())  {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select * from users");
 
-        while (rs.next()) {
-            String e = rs.getString("email");
-            if (e.equals(email)) {
-                return true;
+            while (rs.next()) {
+                String e = rs.getString("email");
+                if (e.equals(email)) {
+                    return true;
+                }
             }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
 
-    public static int saveUser(User user) throws SQLException{
-        Connection connection = MyConnection.getConnection();
-        PreparedStatement ps = connection.prepareStatement("insert into users values(default, ?, ?) ");
-        ps.setString(1, user.getName());
-        ps.setString(2, user.getEmail());
-        return ps.executeUpdate();
+    public static int saveUser(User user) {
+
+        try ( Connection connection = MyConnection.getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into users values(default, ?, ?) ");
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getEmail());
+            return preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+
     }
 }
