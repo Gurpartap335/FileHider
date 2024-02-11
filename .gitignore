@@ -171,3 +171,6 @@ out/
 *.iml
 *.ipr
 *.iws
+
+/src/main/resources/config.properties
+/target/classes/config.properties
