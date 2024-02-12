@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataDAO {
-
     public static List<Data> getAllFiles(String email) {
 
         try (Connection connection = MyConnection.getConnection()) {
@@ -31,24 +30,22 @@ public class DataDAO {
         return null;
     }
 
-    public static int hideFile(Data file) {
+    public static void hideFile(Data file) {
 
         try (Connection connection = MyConnection.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("insert into data(name, path, email, bin_data) values(?, ?, ?, ?)");
+            PreparedStatement ps = connection.prepareStatement("insert into data(name, path, email, bin_data) values(?, ?, ?, ?);");
             ps.setString(1, file.getFileName());
             ps.setString(2,file.getPath());
             ps.setString(3, file.getEmail());
             File f = new File(file.getPath());
-            FileReader fr = new FileReader(f);
-            ps.setCharacterStream(4, fr, f.length());
-            int ans = ps.executeUpdate();
-            fr.close();
+            FileReader fileReader = new FileReader(f);
+            ps.setCharacterStream(4, fileReader, f.length());
+            ps.executeUpdate();
+            fileReader.close();
             f.delete();
-            return ans;
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
-        return 0;
     }
 
 
@@ -80,5 +77,3 @@ public class DataDAO {
     }
 
 }
-
-// prepared-statement vs statement
