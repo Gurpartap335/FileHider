@@ -11,9 +11,9 @@ import java.util.List;
 public class DataDAO {
     public static List<Data> getAllFiles(String email) {
 
-        try (Connection connection = MyConnection.getConnection()) {
+        try (Connection connection = MyConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement("select * from data where email = ?")) {
             List<Data> files = new ArrayList<>();
-            PreparedStatement ps = connection.prepareStatement("select * from data where email = ?");
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -32,17 +32,20 @@ public class DataDAO {
 
     public static void hideFile(Data file) {
 
-        try (Connection connection = MyConnection.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("insert into data(name, path, email, bin_data) values(?, ?, ?, ?);");
+        try (Connection connection = MyConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement("insert into data(name, path, email, bin_data) values(?, ?, ?, ?);")) {
             ps.setString(1, file.getFileName());
-            ps.setString(2,file.getPath());
+            ps.setString(2, file.getPath());
             ps.setString(3, file.getEmail());
+
             File f = new File(file.getPath());
             FileReader fileReader = new FileReader(f);
             ps.setCharacterStream(4, fileReader, f.length());
             ps.executeUpdate();
             fileReader.close();
-            f.delete();
+            if (f.delete()) {
+                System.out.println(file.getFileName() + "is hidden now");
+            }
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
@@ -70,6 +73,7 @@ public class DataDAO {
             ps = connection.prepareStatement("delete from data where id = ?");
             ps.setInt(1, id);
             ps.executeUpdate();
+            ps.close();
             System.out.println("Unhidden");
         } catch (SQLException | IOException e) {
             e.printStackTrace();

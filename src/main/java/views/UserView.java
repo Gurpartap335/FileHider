@@ -41,7 +41,7 @@ public class UserView {
                     System.out.println("Enter the file path");
                     String path = s.nextLine();
                     File f = new File(path);
-                    Data file = new Data(0, f.getName(), path, email);
+                    Data file = new Data(f.getName(), path, email);
                     DataDAO.hideFile(file);
                 }
                 case 3 -> {

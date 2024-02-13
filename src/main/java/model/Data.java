@@ -14,14 +14,7 @@ public class Data {
 
     }
 
-    public Data(int id, String fileName, String path) {
-        this.id = id;
-        this.fileName = fileName;
-        this.path = path;
-    }
-
-    public Data(int id, String fileName, String path, String email) {
-        this.id = id;
+    public Data(String fileName, String path, String email) {
         this.fileName = fileName;
         this.path = path;
         this.email = email;
