@@ -69,7 +69,12 @@ public class Welcome {
 
             switch (response) {
                 case 0 -> System.out.println("User already exists");
-                case 1 -> System.out.println("User registered");
+                case 1 -> {
+                    System.out.println("User registered");
+                    UserView view = new UserView(email);
+                    view.home();
+                }
+
             }
         } else {
             System.out.println("Wrong OTP");
